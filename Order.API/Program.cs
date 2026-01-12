@@ -1,7 +1,22 @@
+using MassTransit;
+using Microsoft.EntityFrameworkCore;
+using Order.API;
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
+builder.Services.AddDbContext<AppDbContext>(options =>
+    options.UseSqlServer(builder.Configuration.GetConnectionString("OrderDb")));
+
+builder.Services.AddMassTransit(x =>
+{
+	x.UsingRabbitMq((_context, _configurator) =>
+	{
+		_configurator.Host(builder.Configuration.GetConnectionString("RabbitMQ"));
+
+	});
+});
 
 var app = builder.Build();
 
