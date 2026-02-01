@@ -1,4 +1,5 @@
 using MassTransit;
+using Microsoft.AspNetCore.Builder;
 using Microsoft.EntityFrameworkCore;
 using Order.API;
 
@@ -18,6 +19,9 @@ builder.Services.AddMassTransit(x =>
 	});
 });
 
+builder.Services.AddEndpointsApiExplorer();
+builder.Services.AddSwaggerGen();
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
@@ -33,8 +37,10 @@ app.MapStaticAssets();
 
 app.MapControllerRoute(
     name: "default",
-    pattern: "{controller=Home}/{action=Index}/{id?}")
+    pattern: "{controller=Orders}/{action=Create}/{id?}")
     .WithStaticAssets();
 
+app.UseSwagger();
+app.UseSwaggerUI();
 
 app.Run();
