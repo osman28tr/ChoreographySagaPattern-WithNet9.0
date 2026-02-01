@@ -44,9 +44,9 @@ namespace Order.API.Controllers
                 }).ToList()
             };
 
-            _context.Orders.Add(newOrder);
+            _context.Orders.Add(newOrder);            
             await _context.SaveChangesAsync();
-            
+                       
             OrderCreatedEvent orderCreatedEvent = new()
             {
                 BuyerId = newOrder.UserId,
