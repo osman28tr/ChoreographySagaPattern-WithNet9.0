@@ -20,12 +20,12 @@ namespace Payment.API.Consumers
             if (balance > context.Message.Payment.TotalPrice)
             {
                 _logger.LogInformation($"{context.Message.Payment.TotalPrice} TL was with drawn from card for userid={context.Message.BuyerId}");
-                await _publishEndpoint.Publish(new PaymentSuccessEvent { OrderId = context.Message.OrderId, BuyerId = context.Message.BuyerId });
+                await _publishEndpoint.Publish(new PaymentCompletedEvent { OrderId = context.Message.OrderId, BuyerId = context.Message.BuyerId });
                 return;
             }
             _logger.LogInformation($"{context.Message.Payment.TotalPrice} TL was with not drawn from card for userid={context.Message.BuyerId}");
-            await _publishEndpoint.Publish(new PaymentFailEvent
-            {
+            await _publishEndpoint.Publish(new PaymentFailedEvent
+			{
                 OrderId = context.Message.OrderId,
                 BuyerId = context.Message.BuyerId,
                 Message = "payment process was failed"
