@@ -10,5 +10,6 @@ namespace Shared
     {
         public const string StockReservedEventQueue = "stock-reserved-event-queue";
         public const string StockOrderCreatedEventQueue = "stock-order-created-queue";
+        public const string PaymentStockReservedEventQueue = "payment-stock-reserved-queue";
     }
 }
