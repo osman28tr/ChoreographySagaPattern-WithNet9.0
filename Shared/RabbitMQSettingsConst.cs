@@ -13,5 +13,6 @@ namespace Shared
         public const string StockOrderCreatedEventQueue = "stock-order-created-queue";
         public const string OrderPaymentCompletedEventQueue = "order-payment-completed-queue";
         public const string OrderPaymentFailedEventQueue = "order-payment-failed-queue";
+        public const string StockPaymentFailedEventQueue = "stock-payment-failed-queue";
     }
 }

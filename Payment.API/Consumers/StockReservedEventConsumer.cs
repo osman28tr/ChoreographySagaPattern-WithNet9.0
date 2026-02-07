@@ -28,7 +28,8 @@ namespace Payment.API.Consumers
 			{
                 OrderId = context.Message.OrderId,
                 BuyerId = context.Message.BuyerId,
-                Message = "payment process was failed"
+                Message = "payment process was failed",
+                OrderItems = context.Message.OrderItems
             });
         }
     }
