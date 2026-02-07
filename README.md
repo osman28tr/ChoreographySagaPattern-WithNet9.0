@@ -51,7 +51,7 @@
     "cardNumber": "test2",
     "expiration": "test3",
     "cvv": "112",
-    "totalPrice": 100000
+    "totalPrice": 1200
   },
   "orderItems": [
     {
