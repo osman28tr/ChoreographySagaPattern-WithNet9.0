@@ -6,7 +6,7 @@
 <h3>Saga Pattern ve Choreography Tabanlı Saga Pattern Nedir?</h3>
 <p align="justify">Saga design pattern, Mikroservisler arası veri tutarlılığını sağlamak için kullanılır. Birden fazla mikroservis arasında transaction yönetiminde kullanılır. Eğer tek bir veritabanı ile çalışılıyorsa burada kullanılan framework transaction yönetimini otomatik olarak yapmaktadır. Saga’nın iki tane implementasyonu vardır, bu projede bunlardan biri olan Choreography Based Saga design pattern ile gidilmiştir.</p>
 
-<p align="justify"><b>1-Choreography Based Saga </b></p>
+<p align="justify"><b>2-Choreography Based Saga </b></p>
 
 <ul>
 
@@ -19,3 +19,6 @@
 <li>Transaction yönetimi merkezi olmadığı için performans darboğazı azalır.</li>
 
 </ul>
+
+<h1>3- Akış Şeması</h1>
+<img src="images/StreamSchema.png">
