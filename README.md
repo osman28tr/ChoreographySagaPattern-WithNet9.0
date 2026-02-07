@@ -3,10 +3,10 @@
 <h1>1- Giriş</h1>
 <p align="justify">Projede order, stock ve fakepayment mikroservisleri oluşturularak mikroservislerde transaction yönetimi, bununla beraber veri tutarlılığı asenkron bi şekilde sağlanmış olup, temiz bir mimari ve kodlama ile gerçekleştirilmiştir. </p>
 
-<h3>Saga Pattern ve Choreography Tabanlı Saga Pattern Nedir?</h3>
+<h3>2- Saga Pattern ve Choreography Tabanlı Saga Pattern Nedir?</h3>
 <p align="justify">Saga design pattern, Mikroservisler arası veri tutarlılığını sağlamak için kullanılır. Birden fazla mikroservis arasında transaction yönetiminde kullanılır. Eğer tek bir veritabanı ile çalışılıyorsa burada kullanılan framework transaction yönetimini otomatik olarak yapmaktadır. Saga’nın iki tane implementasyonu vardır, bu projede bunlardan biri olan Choreography Based Saga design pattern ile gidilmiştir.</p>
 
-<p align="justify"><b>2-Choreography Based Saga </b></p>
+<p align="justify"><b>Choreography Based Saga </b></p>
 
 <ul>
 
