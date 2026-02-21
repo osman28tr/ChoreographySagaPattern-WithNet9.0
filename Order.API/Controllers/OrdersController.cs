@@ -3,6 +3,8 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Order.API.Dtos;
 using Order.API.Models;
+using Shared;
+using Shared.Abstract;
 using Shared.Events;
 using Shared.Messages;
 
@@ -13,11 +15,11 @@ namespace Order.API.Controllers
     public class OrdersController : ControllerBase
     {
         private readonly AppDbContext _context;
-        private readonly IPublishEndpoint _publishEndpoint;
-        public OrdersController(AppDbContext context, IPublishEndpoint publishEndpoint)
+        private readonly ISendEndpointProvider _sendEndpointProvider;
+        public OrdersController(AppDbContext context, ISendEndpointProvider sendEndpointProvider)
         {
             _context = context;
-            _publishEndpoint = publishEndpoint;
+            _sendEndpointProvider = sendEndpointProvider;
         }
 
         [HttpPost]
@@ -47,11 +49,11 @@ namespace Order.API.Controllers
             _context.Orders.Add(newOrder);            
             await _context.SaveChangesAsync();
                        
-            OrderCreatedEvent orderCreatedEvent = new()
+            OrderCreatedRequestEvent orderCreatedRequestEvent = new()
             {
                 BuyerId = newOrder.UserId,
                 OrderId = newOrder.Id,
-                PaymentMessage = new PaymentMessage
+                Payment = new PaymentMessage
                 {
                     TotalPrice = newOrder.TotalPrice,
                     CardName = orderCreateDto.Payment.CardName,
@@ -64,11 +66,15 @@ namespace Order.API.Controllers
                     ProductId = item.ProductId,
                     Count = item.Count,
                 }).ToList()
-            };            
+            };
 
-            await _publishEndpoint.Publish(orderCreatedEvent); //ilgili exchange'e subscribe olan kuyruk veya mikroservis yoksa boşa gider.
+            var sendEndPoint = await _sendEndpointProvider.GetSendEndpoint(new Uri($"queue:{RabbitMQSettingsConst.OrderSaga}"));
 
-			return Ok("Order created successfully.");
+            await sendEndPoint.Send<IOrderCreatedRequestEvent>(orderCreatedRequestEvent);
+
+           // await _publishEndpoint.Publish(orderCreatedEvent); //ilgili exchange'e subscribe olan kuyruk veya mikroservis yoksa boşa gider.
+
+            return Ok("Order created successfully.");
 		}
 	}
 }
