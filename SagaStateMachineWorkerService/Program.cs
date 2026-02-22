@@ -27,16 +27,16 @@ builder.Services.AddMassTransit(cfg =>
 	});
 
 	//RabbitMQ Configuration and it's connection with state machine
-	cfg.UsingRabbitMq((_provider, _configurator) => Bus.Factory.CreateUsingRabbitMq(configure =>
+	cfg.UsingRabbitMq((context, rabbit) =>
 	{
-		configure.Host(builder.Configuration.GetConnectionString("RabbitMQ"));
+		rabbit.Host(builder.Configuration.GetConnectionString("RabbitMQ"));
 
-		//The part that will trigger the state machine when the OrderCreatedRequestEvent arrives.
-		configure.ReceiveEndpoint(RabbitMQSettingsConst.OrderSaga,e =>
+		rabbit.ReceiveEndpoint(RabbitMQSettingsConst.OrderSaga, e =>
 		{
-			e.ConfigureSaga<OrderStateInstance>(_provider); //Create an order created request record in the OrderStateInstance table.
+			e.ConfigureSaga<OrderStateInstance>(context); //Create an object instance from OrderStateInstance
 		});
-	}));
+
+	});
 });
 
 var host = builder.Build();
