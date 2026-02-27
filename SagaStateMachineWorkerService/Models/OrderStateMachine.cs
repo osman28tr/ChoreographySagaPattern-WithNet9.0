@@ -31,7 +31,8 @@ namespace SagaStateMachineWorkerService.Models
 				context.Instance.TotalPrice = context.Data.Payment.TotalPrice;
 			})//When the order status is init, the order created request transition phase, then the block where the business code to be executed in the relevant transaction is written
 				.Then(context => { Console.WriteLine($"OrderCreatedRequestEvent before : {context.Instance}"); })
-				.TransitionTo(OrderCreated) //Set the state of the relevant order to OrderCreated
+				.Publish(context => new OrderCreatedEvent(context.Instance.CorrelationId ) { OrderItems = context.Data.OrderItems })
+				.TransitionTo(OrderCreated) //Set the state of the relevant order to OrderCreated				
 				.Then(context => { Console.WriteLine($"OrderCreatedRequestEvent after : {context.Instance}"); })
 				);
 		}
