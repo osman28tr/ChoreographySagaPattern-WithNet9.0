@@ -1,4 +1,5 @@
-﻿using Shared.Messages;
+﻿using Shared.Abstract;
+using Shared.Messages;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -7,11 +8,14 @@ using System.Threading.Tasks;
 
 namespace Shared.Events
 {
-    public class StockReservedEvent
-    {
-        public int OrderId { get; set; }
-        public string BuyerId { get; set; }       
-        public PaymentMessage Payment { get; set; }
-        public List<OrderItemMessage> OrderItems { get; set; } = new List<OrderItemMessage>();
-    }
+	public class StockReservedEvent : IStockReservedEvent
+	{
+		public StockReservedEvent(Guid correlationId)
+		{
+			CorrelationId = correlationId;
+		}
+		public List<OrderItemMessage> OrderItems { get ; set; }
+
+		public Guid CorrelationId { get; }
+	}
 }
