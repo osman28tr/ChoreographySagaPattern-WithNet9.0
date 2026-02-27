@@ -22,5 +22,20 @@ namespace SagaStateMachineWorkerService.Models
 		public string CVV { get; set; }
 		[Column(TypeName = "decimal(18,2)")]
 		public decimal TotalPrice { get; set; }
+		public override string ToString()
+		{
+			var properties = GetType().GetProperties();
+
+			var sb = new StringBuilder();
+
+			properties.ToList().ForEach(p =>
+			{
+				var value = p.GetValue(this, null);
+				sb.AppendLine($"{p.Name}:{value}");
+			});
+
+			sb.Append("------------------------");
+			return sb.ToString();
+		}
 	}
 }
