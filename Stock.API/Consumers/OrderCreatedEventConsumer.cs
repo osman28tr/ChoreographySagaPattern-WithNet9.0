@@ -44,6 +44,7 @@ namespace Stock.API.Consumers
 					stock.Count -= item.Count;
 				}
 			}
+			await _context.SaveChangesAsync();
 			var stockReservedEvent = new StockReservedEvent(context.Message.CorrelationId)
 			{
 				OrderItems = context.Message.OrderItems
