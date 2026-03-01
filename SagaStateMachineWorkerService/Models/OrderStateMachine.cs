@@ -50,8 +50,9 @@ namespace SagaStateMachineWorkerService.Models
 						CardNumber = context.Instance.CardNumber,
 						CVV = context.Instance.CVV,
 						Expiration = context.Instance.Expiration,
-						TotalPrice = context.Instance.TotalPrice
-					}
+						TotalPrice = context.Instance.TotalPrice,
+					},
+					BuyerId = context.Instance.BuyerId,
 				}).Then(context => { Console.WriteLine($"StockReservedEvent after : {context.Instance}"); })); //When the stockreserved event arrives
 					//at the state machine while the relevant order is in the ordercreated state, change the order's state to
 					//stockreserved.

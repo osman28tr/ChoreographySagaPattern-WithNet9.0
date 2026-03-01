@@ -8,10 +8,9 @@ using System.Threading.Tasks;
 
 namespace Shared.Abstract
 {
-	public interface IStockReservedRequestPaymentEvent : CorrelatedBy<Guid>
+	public interface IPaymentFailedEvent : CorrelatedBy<Guid>
 	{
-		public string BuyerId { get; set; }
-		public PaymentMessage PaymentMessage { get; set; }
+		public string Reason { get; set; }
 		public List<OrderItemMessage> OrderItems { get; set; }
 	}
 }
