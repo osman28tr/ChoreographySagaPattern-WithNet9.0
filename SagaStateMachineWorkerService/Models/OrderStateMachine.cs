@@ -14,13 +14,19 @@ namespace SagaStateMachineWorkerService.Models
 	{
 		public Event<IOrderCreatedRequestEvent> OrderCreatedRequestEvent { get; set; }
 		public Event<IStockReservedEvent> StockReservedEvent { get; set; }
+		public Event<IPaymentCompletedEvent> PaymentCompletedEvent { get; set; }
 		public State OrderCreated { get; private set; }
 		public State StockReserved { get; private set; }
+		public State PaymentCompleted { get; set; }
 		public OrderStateMachine()
 		{
 			InstanceState(x => x.CurrentState); //Set the state to init.
 
 			Event(() => OrderCreatedRequestEvent, y => y.CorrelateBy<int>(x => x.OrderId, z => z.Message.OrderId).SelectId(context => Guid.NewGuid())); //Compare the order ID in the incoming request with the order ID in the state instance table. If it exists, set its status to init; otherwise, create it.
+
+			Event(() => StockReservedEvent, y => y.CorrelateById(x => x.Message.CorrelationId));
+
+			Event(() => PaymentCompletedEvent, y => y.CorrelateById(x => x.Message.CorrelationId)); //Event and correlationid relation 
 
 			Initially(When(OrderCreatedRequestEvent).Then(context =>
 			{
@@ -54,9 +60,15 @@ namespace SagaStateMachineWorkerService.Models
 					},
 					BuyerId = context.Instance.BuyerId,
 				}).Then(context => { Console.WriteLine($"StockReservedEvent after : {context.Instance}"); })); //When the stockreserved event arrives
-					//at the state machine while the relevant order is in the ordercreated state, change the order's state to
-					//stockreserved.
-					 
+																											   //at the state machine while the relevant order is in the ordercreated state, change the order's state to
+																											   //stockreserved.
+
+			During(/*status*/StockReserved, /*when the event is occurs*/When(PaymentCompletedEvent)./*change the status*/TransitionTo(PaymentCompleted)
+				/*when the status change, send or publish*/
+				.Publish(context => new OrderRequestCompletedEvent { OrderId = context.Instance.OrderId })
+				.Then(context => { Console.WriteLine($"PaymentCompletedEvent after : {context.Instance}"); })
+				.Finalize()
+				);
 		}
 	}
 }

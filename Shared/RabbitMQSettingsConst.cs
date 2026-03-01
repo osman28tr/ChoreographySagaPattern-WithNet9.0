@@ -11,7 +11,7 @@ namespace Shared
         public const string StockReservedEventQueue = "stock-reserved-event-queue";
         public const string StockNotReservedEventQueue = "stock-not-reserved-event-queue";
         public const string StockOrderCreatedEventQueue = "stock-order-created-queue";
-        public const string OrderPaymentCompletedEventQueue = "order-payment-completed-queue";
+        public const string OrderRequestCompletedEventQueue = "order-payment-completed-queue";
         public const string OrderPaymentFailedEventQueue = "order-payment-failed-queue";
         public const string StockPaymentFailedEventQueue = "stock-payment-failed-queue";
         public const string OrderSaga = "order-saga-queue";
