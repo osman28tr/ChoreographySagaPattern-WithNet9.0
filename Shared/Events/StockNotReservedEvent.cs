@@ -14,6 +14,7 @@ namespace Shared.Events
 			CorrelationId = correlationId;
 		}
 		public string Reason { get; set ; }
+		public int OrderId { get; set; }
 
 		public Guid CorrelationId { get; }
 	}

@@ -17,6 +17,7 @@ builder.Services.AddDbContext<AppDbContext>(options =>
 builder.Services.AddMassTransit(x =>
 {
     x.AddConsumer<OrderRequestCompletedEventConsumer>();
+    x.AddConsumer<OrderRequestFailedEventConsumer>();
 	x.UsingRabbitMq((_context, _configurator) =>
 	{
 		_configurator.Host(builder.Configuration.GetConnectionString("RabbitMQ"));
@@ -24,6 +25,10 @@ builder.Services.AddMassTransit(x =>
         {
             x.ConfigureConsumer<OrderRequestCompletedEventConsumer>(_context);
         });
+		_configurator.ReceiveEndpoint(RabbitMQSettingsConst.OrderRequestFailedEventQueue, x =>
+		{
+			x.ConfigureConsumer<OrderRequestFailedEventConsumer>(_context);
+		});
 	});
 });
 

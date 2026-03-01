@@ -15,9 +15,11 @@ namespace SagaStateMachineWorkerService.Models
 		public Event<IOrderCreatedRequestEvent> OrderCreatedRequestEvent { get; set; }
 		public Event<IStockReservedEvent> StockReservedEvent { get; set; }
 		public Event<IPaymentCompletedEvent> PaymentCompletedEvent { get; set; }
+		public Event<IStockNotReservedEvent> StockNotReservedEvent { get; set; }
 		public State OrderCreated { get; private set; }
 		public State StockReserved { get; private set; }
 		public State PaymentCompleted { get; set; }
+		public State StockNotReserved { get; set; }
 		public OrderStateMachine()
 		{
 			InstanceState(x => x.CurrentState); //Set the state to init.
@@ -27,6 +29,8 @@ namespace SagaStateMachineWorkerService.Models
 			Event(() => StockReservedEvent, y => y.CorrelateById(x => x.Message.CorrelationId));
 
 			Event(() => PaymentCompletedEvent, y => y.CorrelateById(x => x.Message.CorrelationId)); //Event and correlationid relation 
+
+			Event(() => StockNotReservedEvent, y => y.CorrelateById(x => x.Message.CorrelationId));
 
 			Initially(When(OrderCreatedRequestEvent).Then(context =>
 			{
@@ -59,9 +63,12 @@ namespace SagaStateMachineWorkerService.Models
 						TotalPrice = context.Instance.TotalPrice,
 					},
 					BuyerId = context.Instance.BuyerId,
-				}).Then(context => { Console.WriteLine($"StockReservedEvent after : {context.Instance}"); })); //When the stockreserved event arrives
-																											   //at the state machine while the relevant order is in the ordercreated state, change the order's state to
-																											   //stockreserved.
+				}).Then(context => { Console.WriteLine($"StockReservedEvent after : {context.Instance}"); }) //When the stockreserved event arrives
+																											 //at the state machine while the relevant order is in the ordercreated state, change the order's state to
+																											 //stockreserved.
+				, When(StockNotReservedEvent).TransitionTo(StockNotReserved).
+				Publish(context => new OrderRequestFailedEvent() { Reason = context.Data.Reason,OrderId = context.Instance.OrderId }).
+				Then(context => Console.WriteLine($"stocknotreservedevent after {context.Instance}")));			
 
 			During(/*status*/StockReserved, /*when the event is occurs*/When(PaymentCompletedEvent)./*change the status*/TransitionTo(PaymentCompleted)
 				/*when the status change, send or publish*/
