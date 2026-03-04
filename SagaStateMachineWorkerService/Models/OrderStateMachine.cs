@@ -35,6 +35,8 @@ namespace SagaStateMachineWorkerService.Models
 
 			Event(() => StockNotReservedEvent, y => y.CorrelateById(x => x.Message.CorrelationId));
 
+			Event(() => PaymentFailedEvent, y => y.CorrelateById(x => x.Message.CorrelationId));
+
 			Initially(When(OrderCreatedRequestEvent).Then(context =>
 			{
 				context.Instance.BuyerId = context.Data.BuyerId;
