@@ -69,3 +69,4 @@
 ```
 ## 7- Notlar
 - StockAPI mikroservis'i ayağa kalktığında db'de hiç stok verisi yoksa örnek seed stok dataları gönderir.
+- Gerçekleştirilen projenin orchestration implementasyonunu görmek için SagaOrchestrationPattern branch'ini seçiniz. 
