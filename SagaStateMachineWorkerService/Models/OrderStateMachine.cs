@@ -2,6 +2,7 @@
 using Shared;
 using Shared.Abstract;
 using Shared.Events;
+using Shared.Messages;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -16,10 +17,12 @@ namespace SagaStateMachineWorkerService.Models
 		public Event<IStockReservedEvent> StockReservedEvent { get; set; }
 		public Event<IPaymentCompletedEvent> PaymentCompletedEvent { get; set; }
 		public Event<IStockNotReservedEvent> StockNotReservedEvent { get; set; }
+		public Event<IPaymentFailedEvent> PaymentFailedEvent { get; set; }
 		public State OrderCreated { get; private set; }
 		public State StockReserved { get; private set; }
 		public State PaymentCompleted { get; set; }
 		public State StockNotReserved { get; set; }
+		public State PaymentFailed { get; set; }
 		public OrderStateMachine()
 		{
 			InstanceState(x => x.CurrentState); //Set the state to init.
@@ -76,6 +79,16 @@ namespace SagaStateMachineWorkerService.Models
 				.Then(context => { Console.WriteLine($"PaymentCompletedEvent after : {context.Instance}"); })
 				.Finalize()
 				);
+
+			During(StockReserved, When(PaymentFailedEvent).Publish
+				(context => new OrderRequestFailedEvent() { Reason = context.Data.Reason, OrderId = context.Instance.OrderId })
+				.Send(new Uri($"queue:{RabbitMQSettingsConst.PaymentStockReservedRequestQueueName}"),
+				context => new StockRollBackMessage
+				{
+					OrderItems = context.Message.OrderItems
+				}).TransitionTo(PaymentFailed));
+
+			SetCompletedWhenFinalized(); //remove the finalized ones from the state
 		}
 	}
 }

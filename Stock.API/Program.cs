@@ -16,6 +16,7 @@ builder.Services.AddDbContext<AppDbContext>(options =>
 builder.Services.AddMassTransit(x =>
 {
 	x.AddConsumer<OrderCreatedEventConsumer>();
+	x.AddConsumer<StockRollBackMessageConsumer>();
 
 	x.UsingRabbitMq((_context, _configurator) =>
 	{
@@ -23,6 +24,10 @@ builder.Services.AddMassTransit(x =>
 		_configurator.ReceiveEndpoint(RabbitMQSettingsConst.StockOrderCreatedEventQueue, e =>
 		{
 			e.ConfigureConsumer<OrderCreatedEventConsumer>(_context);
+		});
+		_configurator.ReceiveEndpoint(RabbitMQSettingsConst.StockRollBackMessageQueue, e =>
+		{
+			e.ConfigureConsumer<StockRollBackMessageConsumer>(_context);
 		});
 	});
 });

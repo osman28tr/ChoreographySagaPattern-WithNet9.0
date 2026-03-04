@@ -17,5 +17,6 @@ namespace Shared
         public const string OrderSaga = "order-saga-queue";
         public const string PaymentStockReservedRequestQueueName = "payment-stock-reserved-request-queue";
 		public const string OrderRequestFailedEventQueue = "order-payment-failed-queue";
+        public const string StockRollBackMessageQueue = "stock-rollback-queue";
 	}
 }
