@@ -17,7 +17,7 @@
 </p>
 
 <h1>3- Akış Şeması</h1>
-<img src="images/Orchestrationschema.png">
+<img src="images/OrchestrationPatternSchema.png">
 <h1>4- Projenin İşleyişi</h1>
 <p align="justify"></p>
 
