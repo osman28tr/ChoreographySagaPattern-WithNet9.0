@@ -19,7 +19,7 @@
 <h1>3- Akış Şeması</h1>
 <img src="images/OrchestrationPatternSchema.png">
 <h1>4- Projenin İşleyişi</h1>
-<p align="justify"></p>
+<p align="justify">Kullanıcı tarafından yapılan order request öncelikle order mikroservis'i tarafından karşılanır, gerekli order oluşturulduktan sonra order mikroservis'inden <b>OrderCreatedRequestEvent</b> nesnesi RabbitMQ'ya bir kuyruk aracılığıyla send edilir. Bu event'ı dinleyen <b>State Machine</b> event geldikten sonra orderlar'ın state'ini ve gerekli bilgilerini tutan tabloda state instance oluşturur ve order'ın durumunu init'e set eder. Ardından stock mikroservis'ine ilgili order itemların stokta bulunup bulunmadığını kontrol etmesi için bir event fırlatır. Stock mikroservis'i duruma göre olumlu veya olumsuz durumu state machine'e döner. State machine olumsuz durumda ilgili order'ın state'ini oluşturulan state tablosunda not reserved duruma çeker ve order mikroservis'ine sipariş'in olumsuz sonuçlandığı ile ilgili bir event gönderir. Olumlu durumda stock mikroservis'i yine bir event yayınlar, state machine bu event'ı alır ve state tablosunda ilgili order'ın state'ini stock reserved'a çeker işlem payment'dan devam eder. En son sipariş'in tüm adımları başarıyla tamamlandıktan sonra state machine ilgili order'ın state'ini final'a çeker, state tablosundan bu order'ın state bilgilerini artık gerekli olmadığı için siler ve order'a sipariş'in başarıyla tamamlandığına dair event gönderir. Süreç tamamlanır. Bu aşamalarda publish veya send edilen eventlar, çok fazla event ve request olmasına karşın state machine'de state tablosunda <b>correlationid</b> ile ilişkilendirilir.</p>
 
 <h1>5- Kullanılan Teknolojiler</h1>
 <ul>
